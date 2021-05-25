@@ -23,7 +23,7 @@ var md = __webpack_require__(/*! markdown-it */ "./node_modules/markdown-it/inde
   xhtmlOut: true,
   breaks: true,
   linkify: true
-}).use(wikilinks);
+}).use(wikilinks).use(__webpack_require__(/*! markdown-it-mark */ "./node_modules/markdown-it-mark/index.js")).use(__webpack_require__(/*! markdown-it-ins */ "./node_modules/markdown-it-ins/index.js")).use(__webpack_require__(/*! markdown-it-spoiler */ "./node_modules/markdown-it-spoiler/index.js"));
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Markdown",

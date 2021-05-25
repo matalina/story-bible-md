@@ -2799,6 +2799,294 @@ module.exports = function (opts) {
 
 /***/ }),
 
+/***/ "./node_modules/markdown-it-ins/index.js":
+/*!***********************************************!*\
+  !*** ./node_modules/markdown-it-ins/index.js ***!
+  \***********************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+
+module.exports = function ins_plugin(md) {
+  // Insert each marker as a separate text token, and add it to delimiter list
+  //
+  function tokenize(state, silent) {
+    var i, scanned, token, len, ch,
+        start = state.pos,
+        marker = state.src.charCodeAt(start);
+
+    if (silent) { return false; }
+
+    if (marker !== 0x2B/* + */) { return false; }
+
+    scanned = state.scanDelims(state.pos, true);
+    len = scanned.length;
+    ch = String.fromCharCode(marker);
+
+    if (len < 2) { return false; }
+
+    if (len % 2) {
+      token         = state.push('text', '', 0);
+      token.content = ch;
+      len--;
+    }
+
+    for (i = 0; i < len; i += 2) {
+      token         = state.push('text', '', 0);
+      token.content = ch + ch;
+
+      if (!scanned.can_open && !scanned.can_close) { continue; }
+
+      state.delimiters.push({
+        marker: marker,
+        length: 0,     // disable "rule of 3" length checks meant for emphasis
+        jump:   i / 2, // 1 delimiter = 2 characters
+        token:  state.tokens.length - 1,
+        end:    -1,
+        open:   scanned.can_open,
+        close:  scanned.can_close
+      });
+    }
+
+    state.pos += scanned.length;
+
+    return true;
+  }
+
+
+  // Walk through delimiter list and replace text tokens with tags
+  //
+  function postProcess(state, delimiters) {
+    var i, j,
+        startDelim,
+        endDelim,
+        token,
+        loneMarkers = [],
+        max = delimiters.length;
+
+    for (i = 0; i < max; i++) {
+      startDelim = delimiters[i];
+
+      if (startDelim.marker !== 0x2B/* + */) {
+        continue;
+      }
+
+      if (startDelim.end === -1) {
+        continue;
+      }
+
+      endDelim = delimiters[startDelim.end];
+
+      token         = state.tokens[startDelim.token];
+      token.type    = 'ins_open';
+      token.tag     = 'ins';
+      token.nesting = 1;
+      token.markup  = '++';
+      token.content = '';
+
+      token         = state.tokens[endDelim.token];
+      token.type    = 'ins_close';
+      token.tag     = 'ins';
+      token.nesting = -1;
+      token.markup  = '++';
+      token.content = '';
+
+      if (state.tokens[endDelim.token - 1].type === 'text' &&
+          state.tokens[endDelim.token - 1].content === '+') {
+
+        loneMarkers.push(endDelim.token - 1);
+      }
+    }
+
+    // If a marker sequence has an odd number of characters, it's splitted
+    // like this: `~~~~~` -> `~` + `~~` + `~~`, leaving one marker at the
+    // start of the sequence.
+    //
+    // So, we have to move all those markers after subsequent s_close tags.
+    //
+    while (loneMarkers.length) {
+      i = loneMarkers.pop();
+      j = i + 1;
+
+      while (j < state.tokens.length && state.tokens[j].type === 'ins_close') {
+        j++;
+      }
+
+      j--;
+
+      if (i !== j) {
+        token = state.tokens[j];
+        state.tokens[j] = state.tokens[i];
+        state.tokens[i] = token;
+      }
+    }
+  }
+
+  md.inline.ruler.before('emphasis', 'ins', tokenize);
+  md.inline.ruler2.before('emphasis', 'ins', function (state) {
+    var curr,
+        tokens_meta = state.tokens_meta,
+        max = (state.tokens_meta || []).length;
+
+    postProcess(state, state.delimiters);
+
+    for (curr = 0; curr < max; curr++) {
+      if (tokens_meta[curr] && tokens_meta[curr].delimiters) {
+        postProcess(state, tokens_meta[curr].delimiters);
+      }
+    }
+  });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/markdown-it-mark/index.js":
+/*!************************************************!*\
+  !*** ./node_modules/markdown-it-mark/index.js ***!
+  \************************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+
+module.exports = function ins_plugin(md) {
+  // Insert each marker as a separate text token, and add it to delimiter list
+  //
+  function tokenize(state, silent) {
+    var i, scanned, token, len, ch,
+        start = state.pos,
+        marker = state.src.charCodeAt(start);
+
+    if (silent) { return false; }
+
+    if (marker !== 0x3D/* = */) { return false; }
+
+    scanned = state.scanDelims(state.pos, true);
+    len = scanned.length;
+    ch = String.fromCharCode(marker);
+
+    if (len < 2) { return false; }
+
+    if (len % 2) {
+      token         = state.push('text', '', 0);
+      token.content = ch;
+      len--;
+    }
+
+    for (i = 0; i < len; i += 2) {
+      token         = state.push('text', '', 0);
+      token.content = ch + ch;
+
+      if (!scanned.can_open && !scanned.can_close) { continue; }
+
+      state.delimiters.push({
+        marker: marker,
+        length: 0,     // disable "rule of 3" length checks meant for emphasis
+        jump:   i / 2, // 1 delimiter = 2 characters
+        token:  state.tokens.length - 1,
+        end:    -1,
+        open:   scanned.can_open,
+        close:  scanned.can_close
+      });
+    }
+
+    state.pos += scanned.length;
+
+    return true;
+  }
+
+
+  // Walk through delimiter list and replace text tokens with tags
+  //
+  function postProcess(state, delimiters) {
+    var i, j,
+        startDelim,
+        endDelim,
+        token,
+        loneMarkers = [],
+        max = delimiters.length;
+
+    for (i = 0; i < max; i++) {
+      startDelim = delimiters[i];
+
+      if (startDelim.marker !== 0x3D/* = */) {
+        continue;
+      }
+
+      if (startDelim.end === -1) {
+        continue;
+      }
+
+      endDelim = delimiters[startDelim.end];
+
+      token         = state.tokens[startDelim.token];
+      token.type    = 'mark_open';
+      token.tag     = 'mark';
+      token.nesting = 1;
+      token.markup  = '==';
+      token.content = '';
+
+      token         = state.tokens[endDelim.token];
+      token.type    = 'mark_close';
+      token.tag     = 'mark';
+      token.nesting = -1;
+      token.markup  = '==';
+      token.content = '';
+
+      if (state.tokens[endDelim.token - 1].type === 'text' &&
+          state.tokens[endDelim.token - 1].content === '=') {
+
+        loneMarkers.push(endDelim.token - 1);
+      }
+    }
+
+    // If a marker sequence has an odd number of characters, it's splitted
+    // like this: `~~~~~` -> `~` + `~~` + `~~`, leaving one marker at the
+    // start of the sequence.
+    //
+    // So, we have to move all those markers after subsequent s_close tags.
+    //
+    while (loneMarkers.length) {
+      i = loneMarkers.pop();
+      j = i + 1;
+
+      while (j < state.tokens.length && state.tokens[j].type === 'mark_close') {
+        j++;
+      }
+
+      j--;
+
+      if (i !== j) {
+        token = state.tokens[j];
+        state.tokens[j] = state.tokens[i];
+        state.tokens[i] = token;
+      }
+    }
+  }
+
+  md.inline.ruler.before('emphasis', 'mark', tokenize);
+  md.inline.ruler2.before('emphasis', 'mark', function (state) {
+    var curr,
+        tokens_meta = state.tokens_meta,
+        max = (state.tokens_meta || []).length;
+
+    postProcess(state, state.delimiters);
+
+    for (curr = 0; curr < max; curr++) {
+      if (tokens_meta[curr] && tokens_meta[curr].delimiters) {
+        postProcess(state, tokens_meta[curr].delimiters);
+      }
+    }
+  });
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/markdown-it-regexp/index.js":
 /*!**************************************************!*\
   !*** ./node_modules/markdown-it-regexp/index.js ***!
@@ -2939,6 +3227,164 @@ exports.escape = function(html) {
     .replace(/>/g, '&gt;')
 }
 
+
+
+/***/ }),
+
+/***/ "./node_modules/markdown-it-spoiler/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/markdown-it-spoiler/index.js ***!
+  \***************************************************/
+/***/ ((module) => {
+
+"use strict";
+/**!
+ * markdown-it-mark
+ *
+ * Copyright (c) 2014-2015 Vitaly Puzrin, Alex Kocharin.
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without
+ * restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following
+ * conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+const exMark = 0x21 /* ! */
+
+const tokenize = frontPriorMode => (state, silent) => {
+  if (silent) return false
+
+  const start = state.pos
+  const marker = state.src.charCodeAt(start)
+
+  if (marker !== exMark) return false
+
+  const scanned = state.scanDelims(state.pos, true)
+  let len = scanned.length
+  const ch = String.fromCharCode(marker)
+
+  if (len < 2) return false
+
+  let isOdd = false
+  if (len % 2) {
+    isOdd = true
+    if (!frontPriorMode) {
+      const token = state.push("text", "", 0)
+      token.content = ch
+    }
+    len--
+  }
+
+  for (let i = 0; i < len; i += 2) {
+    const token = state.push("text", "", 0)
+    token.content = ch + ch
+
+    state.delimiters.push({
+      marker,
+      length: 0, // disable "rule of 3" length checks meant for emphasis
+      jump: i,
+      token: state.tokens.length - 1,
+      end: -1,
+      open: scanned.can_open,
+      close: scanned.can_close
+    })
+  }
+
+  state.pos += scanned.length
+  if (isOdd && frontPriorMode) {
+    state.pos--
+  }
+
+  return true
+}
+
+const postProcess = (state, delimiters) => {
+  const loneMarkers = []
+
+  for (const startDelim of delimiters) {
+    if (startDelim.marker !== exMark) continue
+    if (startDelim.end === -1) continue
+
+    const endDelim = delimiters[startDelim.end]
+
+    const tokenO = state.tokens[startDelim.token]
+    tokenO.type = "spoiler_open"
+    tokenO.tag = "span"
+    tokenO.attrs = [["class", "spoiler"]]
+    tokenO.nesting = 1
+    tokenO.markup = "!!"
+    tokenO.content = ""
+
+    const tokenC = state.tokens[endDelim.token]
+    tokenC.type = "spoiler_close"
+    tokenC.tag = "span"
+    tokenC.nesting = -1
+    tokenC.markup = "!!"
+    tokenC.content = ""
+
+    if (
+      state.tokens[endDelim.token - 1].type === "text" &&
+      state.tokens[endDelim.token - 1].content === "!"
+    ) {
+      loneMarkers.push(endDelim.token - 1)
+    }
+  }
+
+  // If a marker sequence has an odd number of characters, it's splitted
+  // like this: `!!!!!` -> `!` + `!!` + `!!`, leaving one marker at the
+  // start of the sequence.
+  //
+  // So, we have to move all those markers after subsequent spoiler_close tags.
+  //
+  while (loneMarkers.length) {
+    const i = loneMarkers.pop()
+    let j = i + 1
+
+    while (
+      j < state.tokens.length &&
+      state.tokens[j].type === "spoiler_close"
+    ) {
+      j++
+    }
+
+    j--
+
+    if (i !== j) {
+      const token = state.tokens[j]
+      state.tokens[j] = state.tokens[i]
+      state.tokens[i] = token
+    }
+  }
+}
+
+module.exports = function(md, frontPriorMode = false) {
+  md.inline.ruler.before("emphasis", "spoiler", tokenize(frontPriorMode))
+  md.inline.ruler2.before("emphasis", "spoiler", state => {
+    postProcess(state, state.delimiters)
+
+    if (!state.tokens_meta) return
+    for (const meta of state.tokens_meta) {
+      if (meta && meta.delimiters) {
+        postProcess(state, meta.delimiters)
+      }
+    }
+  })
+}
 
 
 /***/ }),

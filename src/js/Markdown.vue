@@ -11,7 +11,10 @@ let md = require('markdown-it')({
         breaks: true, 
         linkify: true,
     })
-        .use(wikilinks);
+        .use(wikilinks)
+        .use(require('markdown-it-mark'))
+        .use(require('markdown-it-ins'))
+        .use(require('markdown-it-spoiler'));
 
 
 export default {
