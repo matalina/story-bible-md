@@ -9,9 +9,9 @@ module.exports = (options) => {
   const defaults = {
     linkPattern: /\[\[([\w\s/]+)(\|([\w\s/]+))?\]\]/,
     baseURL: '/',
-    relativeBaseURL: './',
+    relativeBaseURL: './#/',
     makeAllLinksAbsolute: false,
-    uriSuffix: '.html',
+    uriSuffix: '',
     htmlAttributes: {
     },
     generatePageNameFromLabel: (label) => {
@@ -20,7 +20,7 @@ module.exports = (options) => {
     postProcessPageName: (pageName) => {
       pageName = pageName.trim()
       pageName = pageName.split('/').map(sanitize).join('/')
-      pageName = pageName.replace(/\s+/, '_')
+      pageName = pageName.replace(/\s+/, '-')
       return pageName
     },
     postProcessLabel: (label) => {
@@ -74,14 +74,14 @@ module.exports = (options) => {
       }
       href = utils.escape(href)
 
-      htmlAttrs.push(`to="${href}"`)
+      htmlAttrs.push(`href="${href}"`)
       for (let attrName in options.htmlAttributes) {
         const attrValue = options.htmlAttributes[attrName]
         htmlAttrs.push(`${attrName}="${attrValue}"`)
       }
       htmlAttrsString = htmlAttrs.join(' ')
       
-      return `<router-link ${htmlAttrsString}>${label}</router-link>`
+      return `<a ${htmlAttrsString}>${label}</a>`
     }
   )
 }

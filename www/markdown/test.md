@@ -1,3 +1,3 @@
 # Markdown Test
 
-[Back to home](/)
+[[/|test]]

@@ -88,9 +88,9 @@ module.exports = function (options) {
   var defaults = {
     linkPattern: /\[\[([\w\s/]+)(\|([\w\s/]+))?\]\]/,
     baseURL: '/',
-    relativeBaseURL: './',
+    relativeBaseURL: './#/',
     makeAllLinksAbsolute: false,
-    uriSuffix: '.html',
+    uriSuffix: '',
     htmlAttributes: {},
     generatePageNameFromLabel: function generatePageNameFromLabel(label) {
       return label;
@@ -98,7 +98,7 @@ module.exports = function (options) {
     postProcessPageName: function postProcessPageName(pageName) {
       pageName = pageName.trim();
       pageName = pageName.split('/').map(sanitize).join('/');
-      pageName = pageName.replace(/\s+/, '_');
+      pageName = pageName.replace(/\s+/, '-');
       return pageName;
     },
     postProcessLabel: function postProcessLabel(label) {
@@ -148,7 +148,7 @@ module.exports = function (options) {
     }
 
     href = utils.escape(href);
-    htmlAttrs.push("to=\"".concat(href, "\""));
+    htmlAttrs.push("href=\"".concat(href, "\""));
 
     for (var attrName in options.htmlAttributes) {
       var attrValue = options.htmlAttributes[attrName];
@@ -156,7 +156,7 @@ module.exports = function (options) {
     }
 
     htmlAttrsString = htmlAttrs.join(' ');
-    return "<router-link ".concat(htmlAttrsString, ">").concat(label, "</router-link>");
+    return "<a ".concat(htmlAttrsString, ">").concat(label, "</a>");
   });
 };
 
