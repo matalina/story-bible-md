@@ -1,3 +1,6 @@
+---
+title: Title
+---
 # Markdown Test
 
 ## Heading 2

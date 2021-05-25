@@ -15,9 +15,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 var wikilinks = __webpack_require__(/*! ./WikiLinks */ "./src/js/WikiLinks.js")();
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js").default;
+
+var matter = __webpack_require__(/*! gray-matter */ "./node_modules/gray-matter/index.js");
 
 var md = __webpack_require__(/*! markdown-it */ "./node_modules/markdown-it/index.js")({
   xhtmlOut: true,
@@ -29,7 +34,8 @@ var md = __webpack_require__(/*! markdown-it */ "./node_modules/markdown-it/inde
   name: "Markdown",
   data: function data() {
     return {
-      markdown: '# Loading...'
+      markdown: "# Loading...",
+      meta: {}
     };
   },
   watch: {
@@ -42,14 +48,16 @@ var md = __webpack_require__(/*! markdown-it */ "./node_modules/markdown-it/inde
     getPage: function getPage() {
       var _this = this;
 
-      var file = 'index.md';
+      var file = "index.md";
 
-      if (this.$route.params.pathMatch !== '/') {
+      if (this.$route.params.pathMatch !== "/") {
         file = "".concat(this.$route.params.pathMatch, ".md");
       }
 
       axios.get("markdown/".concat(file)).then(function (response) {
-        _this.markdown = response.data;
+        var data = matter(response.data);
+        _this.markdown = data.content;
+        _this.meta = data.data;
       })["catch"](function (error) {
         axios.get("markdown/404.md").then(function (response) {
           _this.markdown = response.data;
@@ -291,12 +299,26 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("main", { domProps: { innerHTML: _vm._s(_vm.render()) } })
+  return _c("main", [
+    _c("header", [_vm._v(_vm._s(_vm.meta.title))]),
+    _vm._v(" "),
+    _c("main", { domProps: { innerHTML: _vm._s(_vm.render()) } })
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
 
 
+
+/***/ }),
+
+/***/ "?8f81":
+/*!********************!*\
+  !*** fs (ignored) ***!
+  \********************/
+/***/ (() => {
+
+/* (ignored) */
 
 /***/ })
 
