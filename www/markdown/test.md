@@ -1,11 +1,17 @@
 ---
 title: Title
+tags:
+  - test
+  - couple
+  - weird name
+category: Test
 ---
+
 # Markdown Test
 
 ## Heading 2
 
-this is a paragraph
+this is a paragraph :fal-folder:
 
 [link](https://google.com)
 [[test|wiki link]]
@@ -27,7 +33,10 @@ block code
 
 **bold** and _italic_
 
-!!Spoilers!!
+!!Spoilers :fal-folder:!!
+
+!!multiline spoiler
+two lines!!
 
 ++insert text++
 

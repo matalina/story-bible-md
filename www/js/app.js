@@ -18,17 +18,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 var wikilinks = __webpack_require__(/*! ./WikiLinks */ "./src/js/WikiLinks.js")();
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js").default;
 
 var matter = __webpack_require__(/*! gray-matter */ "./node_modules/gray-matter/index.js");
 
+var fa = __webpack_require__(/*! ./FontAwesome */ "./src/js/FontAwesome.js");
+
 var md = __webpack_require__(/*! markdown-it */ "./node_modules/markdown-it/index.js")({
   xhtmlOut: true,
   breaks: true,
   linkify: true
-}).use(wikilinks).use(__webpack_require__(/*! markdown-it-mark */ "./node_modules/markdown-it-mark/index.js")).use(__webpack_require__(/*! markdown-it-ins */ "./node_modules/markdown-it-ins/index.js")).use(__webpack_require__(/*! markdown-it-spoiler */ "./node_modules/markdown-it-spoiler/index.js"));
+}).use(wikilinks).use(fa).use(__webpack_require__(/*! markdown-it-mark */ "./node_modules/markdown-it-mark/index.js")).use(__webpack_require__(/*! markdown-it-ins */ "./node_modules/markdown-it-ins/index.js")).use(__webpack_require__(/*! markdown-it-spoiler */ "./node_modules/markdown-it-spoiler/index.js"));
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Markdown",
@@ -74,6 +85,30 @@ var md = __webpack_require__(/*! markdown-it */ "./node_modules/markdown-it/inde
     this.getPage();
   }
 });
+
+/***/ }),
+
+/***/ "./src/js/FontAwesome.js":
+/*!*******************************!*\
+  !*** ./src/js/FontAwesome.js ***!
+  \*******************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var Plugin = __webpack_require__(/*! markdown-it-regexp */ "./node_modules/markdown-it-regexp/index.js");
+
+module.exports = function fontawesome_plugin(md) {
+  // FA4 style.
+  md.use(Plugin(/\:fa-([\w\-]+)\:/, function (match, utils) {
+    return '<i class="fa fa-' + utils.escape(match[1]) + '"></i>';
+  })); // FA5 style.
+
+  md.use(Plugin(/\:fa([\w])-([\w\-]+)\:/, function (match, utils) {
+    return '<i class="fa' + utils.escape(match[1]) + ' fa-' + utils.escape(match[2]) + '"></i>';
+  }));
+};
 
 /***/ }),
 
@@ -300,9 +335,29 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("main", [
-    _c("header", [_vm._v(_vm._s(_vm.meta.title))]),
+    _c("section", { domProps: { innerHTML: _vm._s(_vm.render()) } }),
     _vm._v(" "),
-    _c("main", { domProps: { innerHTML: _vm._s(_vm.render()) } })
+    _c("footer", [
+      _vm.meta.category
+        ? _c("div", [
+            _c("i", { staticClass: "fal fa-folder fa-fw" }),
+            _vm._v(" " + _vm._s(_vm.meta.category) + "\n    ")
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.meta.tags
+        ? _c(
+            "div",
+            _vm._l(_vm.meta.tags, function(tag) {
+              return _c("span", [
+                _c("i", { staticClass: "fal fa-tag fa-fw" }),
+                _vm._v(" " + _vm._s(tag) + "\n      ")
+              ])
+            }),
+            0
+          )
+        : _vm._e()
+    ])
   ])
 }
 var staticRenderFns = []

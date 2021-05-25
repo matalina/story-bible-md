@@ -1,7 +1,16 @@
 <template>
   <main>
-    <header>{{ meta.title }}</header>
-    <main v-html="render()"></main>
+    <section v-html="render()"></section>
+    <footer>
+      <div v-if="meta.category">
+        <i class="fal fa-folder fa-fw"></i> {{ meta.category }}
+      </div>
+      <div v-if="meta.tags">
+        <span v-for="tag in meta.tags">
+          <i class="fal fa-tag fa-fw"></i> {{ tag }}
+        </span>
+      </div>
+    </footer>
   </main>
 </template>
 
@@ -9,6 +18,7 @@
 const wikilinks = require("./WikiLinks")();
 const axios = require("axios").default;
 const matter = require("gray-matter");
+const fa = require("./FontAwesome");
 
 let md = require("markdown-it")({
   xhtmlOut: true,
@@ -16,6 +26,7 @@ let md = require("markdown-it")({
   linkify: true,
 })
   .use(wikilinks)
+  .use(fa)
   .use(require("markdown-it-mark"))
   .use(require("markdown-it-ins"))
   .use(require("markdown-it-spoiler"));
