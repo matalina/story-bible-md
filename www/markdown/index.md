@@ -1,3 +1,8 @@
+---
+title: Home
+uri: index
+---
+
 # Home Page
 
 Coming Soon!

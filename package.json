@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx mix",
     "watch": "npx mix watch",
-    "serve": "cd www && python -m http.server 8000"
+    "serve": "cd www && python -m http.server 8000",
+    "index": "node src/js/SearchIndex.js"
   },
   "repository": {
     "type": "git",

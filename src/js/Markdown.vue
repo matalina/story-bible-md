@@ -59,14 +59,7 @@ export default {
           this.meta = data.data;
         })
         .catch((error) => {
-          axios
-            .get(`markdown/404.md`)
-            .then((response) => {
-              this.markdown = response.data;
-            })
-            .catch((error) => {
-              console.log(error);
-            });
+          this.$router.push('/404');
         });
     },
     render(markdown) {

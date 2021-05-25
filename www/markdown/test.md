@@ -1,5 +1,6 @@
 ---
-title: Title
+title: Test Page
+uri: test
 tags:
   - test
   - couple
