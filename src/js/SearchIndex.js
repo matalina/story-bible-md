@@ -52,11 +52,11 @@ fs.readdir(path, (err, items) => {
 
             let pageIndex = Fuse.createIndex(options, pages);
             let file_contents = JSON.stringify(pageIndex.toJSON());
-            fs.writeFile(`${path}/fuse-index.json`, file_contents, {}, () => { });
+            fs.writeFile(`./www/js/fuse-index.json`, file_contents, {}, () => { });
             file_contents = JSON.stringify(pages);
-            fs.writeFile(`${path}/pages-meta.json`, file_contents, {}, () => { });
+            fs.writeFile(`./www/js/pages-meta.json`, file_contents, {}, () => { });
             
-            readFile('./www/markdown/config.json', 'utf8')
+            readFile('./www/js/config.json', 'utf8')
                 .then(response => {
                     let config = JSON.parse(response);
                     
@@ -67,7 +67,7 @@ fs.readdir(path, (err, items) => {
                     config.tags = [... new Set(tags)];
                     config.categories = [... new Set(categories)];
                     
-                    fs.writeFile('./www/markdown/config.json', JSON.stringify(config), {}, (e) => { console.log(); });
+                    fs.writeFile('./www/js/config.json', JSON.stringify(config), {}, (e) => { console.log(); });
                 })
                 .catch(() => { });
 
