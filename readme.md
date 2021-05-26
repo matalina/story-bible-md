@@ -18,9 +18,9 @@
 - [x] Search
 - [x] Last Updated timestamp
 - [x] Pages in Vuex persistant storage on App load (Search Index too)
-- [ ] Tags/Category Links
-- [ ] All Pages Alphabetical
-- [ ] All Tags/Category Pages Alphabetical
+- [x] Tags/Category Links
+- [x] All Pages Alphabetical
+- [x] All Tags/Category Pages Alphabetical
 - [ ] Spoilers by Book
 
 ### Software Used
