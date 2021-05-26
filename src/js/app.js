@@ -14,9 +14,12 @@ import TagPage from './views/TagPage';
 import CategoryPage from './views/CategoryPage';
 
 import Search from './components/Search';
+import PageList from './components/PageList';
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
+
+Vue.component('PageList', PageList);
 
 const store = new Vuex.Store({
     plugins: [createPersistedState()],
@@ -37,7 +40,7 @@ const store = new Vuex.Store({
     },
     actions: {
         update_pages({ commit }) {
-            axios.get('./markdown/pages-meta.json')
+            axios.get('./js/pages-meta.json')
                 .then(response => {
                     commit('update_pages', response.data);
                 })
@@ -74,7 +77,7 @@ const router = new VueRouter({
             component: AllTags,
         },
         {
-            path: '/tags/:tag',
+            path: '/tag/:tag',
             component: TagPage,
         },
         {
@@ -122,7 +125,7 @@ var app = new Vue({
     components: { Search },
     mounted() {
         this.loading = true;
-        axios.get('./markdown/config.json')
+        axios.get('./js/config.json')
             .then(response => {
                 let data = response.data;
 

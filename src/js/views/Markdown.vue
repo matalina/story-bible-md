@@ -3,11 +3,11 @@
     <section v-html="render()"></section>
     <footer>
       <div v-if="meta.category">
-        <i class="fal fa-folder fa-fw"></i> {{ meta.category }}
+        <i class="fal fa-folder fa-fw"></i> <router-link :to="`/category/${meta.category}`">{{ meta.category }}</router-link>
       </div>
       <div v-if="meta.tags">
         <span v-for="tag in meta.tags">
-          <i class="fal fa-tag fa-fw"></i> {{ tag }}
+          <i class="fal fa-tag fa-fw"></i> <router-link :to="`/tag/${tag}`">{{ tag }}</router-link>
         </span>
       </div>
     </footer>

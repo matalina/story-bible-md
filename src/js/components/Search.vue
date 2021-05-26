@@ -50,7 +50,7 @@ export default {
             this.search = '';
         },
         getPages(){
-            axios.get('./markdown/fuse-index.json')
+            axios.get('./js/fuse-index.json')
             .then(response => {
                 const fuseIndex = response.data;
                 const myIndex = Fuse.parseIndex(fuseIndex);

@@ -6,7 +6,10 @@
         <div v-if="results.length > 0">
             <p>Maybe one of these pages is what you are looking for?</p>
             <ul>
-                <li v-for="result in results">
+                <li 
+                    v-for="(result, index) in results"
+                    :key="`r-${index}`"
+                >
                     <router-link :to="result.item.uri">{{ result.item.title }}</router-link>
                 </li>
             </ul>
@@ -46,10 +49,10 @@ export default {
         });
     },
     mounted() {
-        axios.get('./markdown/fuse-index.json')
+        axios.get('./js/fuse-index.json')
             .then(response => {
                 const fuseIndex = response.data;
-                axios.get('./markdown/pages-meta.json')
+                axios.get('./js/pages-meta.json')
                     .then(response => {
                         let options = [
                             'title',
