@@ -352,18 +352,21 @@ module.exports = function (options) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _Markdown__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Markdown */ "./src/js/Markdown.vue");
 /* harmony import */ var _Error404__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Error404 */ "./src/js/Error404.vue");
 /* harmony import */ var _Search__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Search */ "./src/js/Search.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_3__.default.use(vue_router__WEBPACK_IMPORTED_MODULE_4__.default);
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_4__.default({
+
+vue__WEBPACK_IMPORTED_MODULE_4__.default.use(vue_router__WEBPACK_IMPORTED_MODULE_5__.default);
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__.default({
   routes: [{
     path: '/404',
     component: _Error404__WEBPACK_IMPORTED_MODULE_1__.default
@@ -372,11 +375,39 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_4__.default({
     component: _Markdown__WEBPACK_IMPORTED_MODULE_0__.default
   }]
 });
-var app = new vue__WEBPACK_IMPORTED_MODULE_3__.default({
+var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
   el: '#app',
+  data: function data() {
+    return {
+      loading: false,
+      warming: null,
+      last_updated_on: null,
+      version: null,
+      copyright: {},
+      site_name: null
+    };
+  },
   router: router,
   components: {
     Search: _Search__WEBPACK_IMPORTED_MODULE_2__.default
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    this.loading = true;
+    axios__WEBPACK_IMPORTED_MODULE_3___default().get('./markdown/config.json').then(function (response) {
+      var data = response.data;
+      _this.copyright = data.copyright;
+      _this.site_name = data.site_name;
+      _this.last_updated_on = data.last_updated_on;
+      _this.version = data.version; // get stored values and update if necessary
+      // stop loading screen
+
+      _this.loading = false;
+    })["catch"](function (error) {
+      _this.warning = 'The site had an error loading the configuration and may be out of date.';
+      _this.loading = false;
+    });
   }
 });
 

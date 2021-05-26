@@ -8,15 +8,23 @@
     </head>
     <body>
         <div id="app">
-            <header>
-                <Search></Search>
-            </header>
+            <template v-if="! loading">
+                <header>
+                    {{ site_name }}
+                    <Search></Search>
+                </header>
 
-            <router-view></router-view>
-            
-            <footer>
-
-            </footer>
+                <div v-if="warning">{{ warning }}</div>
+                
+                <router-view></router-view>
+                
+                <footer>
+                    Copyright &copy; {{ copyright.who }}  {{ copyright.start }} <template v-if="copyright.end !== copyright.start">- {{ copyright.end }}</template>
+                </footer>
+            </template>
+           <template v-else>
+               <h1><i class="fas fa-spinner fa-pulse"></i> Loading ... </h1>
+           </template>
         </div>
         <script src="js/manifest.js"></script>
         <script src="js/vendor.js"></script>
