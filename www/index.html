@@ -19,7 +19,7 @@
                 <router-view></router-view>
                 
                 <footer>
-                    Copyright &copy; {{ copyright.who }}  {{ copyright.start }} <template v-if="copyright.end !== copyright.start">- {{ copyright.end }}</template>
+                    Copyright &copy; {{ copyright.who }}  {{ copyright.start }} <template v-if="copyright.end !== copyright.start">- {{ copyright.end }}</template> | v{{ version }} | last updated on {{ formated_last_update }}
                 </footer>
             </template>
            <template v-else>

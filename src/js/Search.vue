@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input v-model="search" @keypress="searchPages()" />
+        <input v-model="search" @keyup="searchPages()" />
         <button @click="clearSearch()">Clear</button>
         <ul>
             <li v-for="result in results">
@@ -16,14 +16,30 @@ const Fuse = require('fuse.js').default;
 
 let fuse = null;
 
+let options = [
+    'title',
+    'tags',
+    'category',
+    'mentions',
+];
+
 export default {
     name: "Search",
     data() {
         return {
             results: [],
             search: '',
-            pages: [],
         };
+    },
+    computed: {
+        pages() {
+            return this.$store.state.pages;
+        },
+    },
+    watch: {
+        pages() {
+            this.getPages();
+        },
     },
     methods: {
         searchPages() {
@@ -32,30 +48,20 @@ export default {
         clearSearch() {
             this.results = [];
             this.search = '';
-        }
-    },
-    mounted() {
-        axios.get('./markdown/fuse-index.json')
+        },
+        getPages(){
+            axios.get('./markdown/fuse-index.json')
             .then(response => {
                 const fuseIndex = response.data;
-                axios.get('./markdown/pages-meta.json')
-                    .then(response => {
-                        let options = [
-                            'title',
-                            'tags',
-                            'category',
-                            'mentions',
-                        ];
-                        
-                        this.pages = response.data;
-                        const myIndex = Fuse.parseIndex(fuseIndex);
-                       
-                        fuse = new Fuse(this.pages, options, myIndex);
-                    })
-                    .catch(error => {});
+                const myIndex = Fuse.parseIndex(fuseIndex);
+                fuse = new Fuse(this.pages, options, myIndex);
             })
             .catch(error => {});
-        
+        }
+    },
+    
+    mounted() {
+        this.getPages();
     }
 }
 </script>

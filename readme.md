@@ -16,11 +16,12 @@
 - [x] Front Matter meta data
 - [x] MediaWiki Links
 - [x] Search
-- [ ] Last Updated timestamp
-- [ ] Pages in Vuex persistant storage on App load (Search Index too)
+- [x] Last Updated timestamp
+- [x] Pages in Vuex persistant storage on App load (Search Index too)
 - [ ] Tags/Category Links
 - [ ] All Pages Alphabetical
 - [ ] All Tags/Category Pages Alphabetical
+- [ ] Spoilers by Book
 
 ### Software Used
 
