@@ -9,6 +9,9 @@ const matter = require("gray-matter");
 const readFile = util.promisify(fs.readFile);
 const path = './www/markdown'
 let pages = [];
+let tags = [];
+let categories = [];
+
 let options = [
     'title',
     'tags',
@@ -39,6 +42,12 @@ fs.readdir(path, (err, items) => {
                 let data = responses[index];
                 let page = matter(data);
                 pages.push(page.data);
+                if (page.data.tags !== undefined) {
+                    tags.push(...page.data.tags);
+                }
+                if (page.data.category !== undefined) {
+                    categories.push(page.data.category);
+                }
             }
 
             let pageIndex = Fuse.createIndex(options, pages);
@@ -55,6 +64,8 @@ fs.readdir(path, (err, items) => {
                     
                     config.last_updated_on = updated_on;
                     config.copyright.end = moment().format('YYYY');
+                    config.tags = [... new Set(tags)];
+                    config.categories = [... new Set(categories)];
                     
                     fs.writeFile('./www/markdown/config.json', JSON.stringify(config), {}, (e) => { console.log(); });
                 })

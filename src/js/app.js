@@ -1,13 +1,19 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Markdown from './Markdown';
-import Error404 from './Error404';
-import Search from './Search';
 import axios from 'axios';
 import moment from 'moment';
 import Vuex from 'vuex';
 import createPersistedState from "vuex-persistedstate";
 
+import Markdown from './views/Markdown';
+import Error404 from './views/Error404';
+import AllPages from './views/AllPages';
+import AllCategories from './views/AllCategories';
+import AllTags from './views/AllTags';
+import TagPage from './views/TagPage';
+import CategoryPage from './views/CategoryPage';
+
+import Search from './components/Search';
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -24,7 +30,9 @@ const store = new Vuex.Store({
         },
         site_name: 'Story Bible MD',
 
-        pages:[],
+        pages: [],
+        tags: [],
+        categories: [],
 
     },
     actions: {
@@ -42,6 +50,8 @@ const store = new Vuex.Store({
             state.copyright = config.copyright;
             state.site_name = config.site_name;
             state.version = config.version;
+            state.tags = config.tags;
+            state.categories = config.categories;
         },
         update_pages(state, pages) {
             state.pages = pages;
@@ -49,12 +59,31 @@ const store = new Vuex.Store({
     }
 });
 
-
 const router = new VueRouter({
     routes: [
         {
             path: '/404',
             component: Error404,
+        },
+        {
+            path: '/all-pages',
+            component: AllPages,
+        },
+        {
+            path: '/tags',
+            component: AllTags,
+        },
+        {
+            path: '/tags/:tag',
+            component: TagPage,
+        },
+        {
+            path: '/categories',
+            component: AllCategories,
+        },
+         {
+            path: '/category/:category',
+            component: CategoryPage,
         },
         {
             path: '*',

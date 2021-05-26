@@ -15,10 +15,10 @@
 </template>
 
 <script>
-const wikilinks = require("./WikiLinks")();
+const wikilinks = require("../WikiLinks")();
 const axios = require("axios").default;
 const matter = require("gray-matter");
-const fa = require("./FontAwesome");
+const fa = require("../FontAwesome");
 
 let md = require("markdown-it")({
   xhtmlOut: true,
